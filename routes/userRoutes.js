@@ -1,5 +1,7 @@
 const express = require('express');
 const User = require('../models/user'); // Importa o modelo de usuário
+const authMiddleware = require('../middlewares/authMiddleware');
+const Profile = require('../models/Profile');
 const router = express.Router();
 
 // Rota para listar todos os usuários
@@ -7,6 +9,19 @@ router.get('/', async (req, res) => {
   try {
     const users = await User.findAll(); // Obtém todos os usuários do banco de dados
     res.status(200).json(users); // Retorna os usuários em formato JSON
+  } catch (error) {
+    console.error('Erro ao listar usuários:', error); // Log do erro no console
+    res.status(500).json({ error: 'Erro ao listar usuários' }); // Retorna mensagem de erro
+  }
+});
+
+// Rota para listar todos os usuários
+router.get('/user', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id } }); // Obtém todos os usuários do banco de dados
+    const profile = await Profile.findOne({ where: { userId: req.user.id } });
+
+    res.status(200).json({ ...user?.dataValues, profilePicture: profile?.profilePicture }); // Retorna os usuários em formato JSON
   } catch (error) {
     console.error('Erro ao listar usuários:', error); // Log do erro no console
     res.status(500).json({ error: 'Erro ao listar usuários' }); // Retorna mensagem de erro
