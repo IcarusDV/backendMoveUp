@@ -134,11 +134,6 @@ const loginUser = async (req, res) => {
       return res.status(404).json({ message: 'Usuário ou email não encontrado.' });
     }
 
-    // Verificar se o usuário está verificado
-    if (!user.isVerified) {
-      return res.status(403).json({ message: 'Conta não verificada. Verifique seu email.' });
-    }
-
     // Comparar senha com o hash armazenado
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {

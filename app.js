@@ -4,11 +4,18 @@ const { connectDB, sequelize } = require('./config/db');
 const authMiddleware = require('./middlewares/authMiddleware');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const cors = require('cors');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 require('dotenv').config();
 
 const app = express();
+
+app.use(cors({
+  origin: '*', // Permitir todas as origens (ou especifique um domínio, por exemplo: 'https://example.com')
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
+}));
 
 // Middleware para JSON
 app.use(express.json());
